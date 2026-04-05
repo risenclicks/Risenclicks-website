@@ -38,14 +38,15 @@
         </div>
         <!-- Mobile Menu -->
         <div class="mobile-menu">
+            <canvas id="menu-matrix-canvas"></canvas>
             <ul>
-                <li><a href="#hero">Home</a></li>
-                <li><a href="#trust">Results</a></li>
-                <li><a href="#creative">Creative Work</a></li>
-                <li><a href="#process">Process</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#hero" class="mobile-nav-link">Home</a></li>
+                <li><a href="#trust" class="mobile-nav-link">Results</a></li>
+                <li><a href="#creative" class="mobile-nav-link">Creative Work</a></li>
+                <li><a href="#process" class="mobile-nav-link">Process</a></li>
+                <li><a href="#contact" class="mobile-nav-link">Contact</a></li>
             </ul>
-            <a href="#contact" class="btn btn-teal-gradient mt-6 w-full text-center">Get Started</a>
+            <a href="#contact" class="btn btn-teal-gradient mt-6 mobile-nav-link">Get Started</a>
         </div>
     </nav>
 
@@ -96,9 +97,39 @@
         </div>
     </header>
 
+    <!-- Mobile-only: Brand Performance Dashboard Section (Page 2 equivalent) -->
+    <section class="mobile-dashboard-section section" style="display:none; padding: 60px 0;">
+        <div class="container">
+            <div class="glass-card demo-card shadow-glow">
+                <div class="demo-header">
+                    <div class="demo-user">
+                        <div class="avatar">RC</div>
+                        <div>
+                            <h4>Brand Performance</h4>
+                            <span class="text-xs opacity-70">Across All Portfolios</span>
+                        </div>
+                    </div>
+                    <div class="live-tag">● LIVE</div>
+                </div>
+                <div class="demo-metrics">
+                    <div class="m-item"><span class="text-teal">-40%</span><label>CPC Reduction</label></div>
+                    <div class="m-item"><span>98%</span><label>Client Satisfaction</label></div>
+                    <div class="m-item"><span class="text-gold">20+</span><label>Projects Completed</label></div>
+                </div>
+                <div class="chart-area mt-4">
+                    <label class="text-xs opacity-70 font-bold tracking-wider mb-2 block">PAST YEAR PERFORMANCE <span class="text-teal ml-2">↑ 45.2%</span></label>
+                    <div class="mini-chart">
+                        <div class="bar" style="height:30%"></div><div class="bar" style="height:45%"></div>
+                        <div class="bar" style="height:35%"></div><div class="bar" style="height:60%"></div>
+                        <div class="bar" style="height:50%"></div><div class="bar" style="height:75%"></div>
+                        <div class="bar bar-active" style="height:100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 
-    <!-- Trust / Social Proof Section -->
     <section id="trust" class="section relative">
         <div class="container text-center max-w-4xl relative z-10">
             <div class="fade-up">

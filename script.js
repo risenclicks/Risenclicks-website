@@ -27,11 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 2. CREATE THE "PERFORMANCE CORE" (Geometric Wireframe Infrastructure)
     const coreGroup = new THREE.Group();
-    if (window.innerWidth <= 480) {
-        coreGroup.position.y = 45;  // Shifted high up to hit strict top-center (not center)
-        coreGroup.position.x = 0;   // Centered horizontally
+    const isMobile = window.innerWidth <= 480;
+    if (isMobile) {
+        coreGroup.position.y = 60;  // High top-center, clear gap above headline
+        coreGroup.position.x = 0;
     } else {
-        coreGroup.position.y = -25; // Lower for desktop text balance
+        coreGroup.position.y = -25;
         coreGroup.position.x = 15;
     }
     scene.add(coreGroup);
@@ -107,9 +108,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const deltaX = touchX - previousTouchX;
             const deltaY = touchY - previousTouchY;
             
-            // Apply direct manual rotation to the globe based on finger swipe
+            // Spin the globe directly with the finger
             coreGroup.rotation.y += deltaX * 0.01;
             coreGroup.rotation.x += deltaY * 0.01;
+            
+            // ALSO move the particles / scene so everything reacts to touch
+            mouseX = (touchX - windowHalfX);
+            mouseY = (touchY - windowHalfY);
 
             previousTouchX = touchX;
             previousTouchY = touchY;
@@ -119,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener('touchend', () => {
         isDragging = false;
     });
+
 
     // 4. SCROLL TO CAMERA SYNC (GSAP)
     // We bind the camera's Z and Y position to the page scroll
@@ -252,5 +258,48 @@ document.addEventListener("DOMContentLoaded", () => {
                 icon.classList.replace('fa-times', 'fa-bars');
             }
         });
+
+        // Close menu when any nav link is clicked
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.classList.replace('fa-times', 'fa-bars');
+            });
+        });
+    }
+
+    // Matrix rain animation inside mobile menu
+    const matrixCanvas = document.getElementById('menu-matrix-canvas');
+    if (matrixCanvas) {
+        const mCtx = matrixCanvas.getContext('2d');
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+
+        const matrixChars = 'RISE01CLICKS10ROAS>_{}[]#@!ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        const fontSize = 13;
+        const columns = Math.floor(matrixCanvas.width / fontSize);
+        const drops = Array(columns).fill(1);
+
+        function drawMatrix() {
+            mCtx.fillStyle = 'rgba(2, 4, 2, 0.05)';
+            mCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+            mCtx.fillStyle = '#00F0FF';
+            mCtx.font = `${fontSize}px 'Courier New', monospace`;
+            drops.forEach((y, i) => {
+                const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                mCtx.fillStyle = i % 5 === 0 ? '#D4AF37' : '#00F0FF'; // Gold accent every 5th column
+                mCtx.fillText(char, i * fontSize, y * fontSize);
+                if (y * fontSize > matrixCanvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }
+        setInterval(drawMatrix, 50);
+    }
+
+    // Show mobile-only dashboard section on small screens
+    if (window.innerWidth <= 480) {
+        const mobileDash = document.querySelector('.mobile-dashboard-section');
+        if (mobileDash) mobileDash.style.display = 'block';
     }
 });
