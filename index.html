@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rise n Clicks | Visual Marketing Agency</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+<body>
+    <!-- WebGL Background -->
+    <canvas id="webgl-canvas"></canvas>
+    
+    <!-- UI Overlay / Scroll Proxy -->
+    <main id="scroll-proxy">
+        <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">Rise n <span>Clicks</span></a>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#trust">Results</a></li>
+                <li><a href="#creative">Creative Work</a></li>
+                <li><a href="#process">Process</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="#contact" class="btn btn-teal-gradient hidden-mobile">Get Started</a>
+                <button class="mobile-menu-btn" aria-label="Toggle Menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="mobile-menu">
+            <ul>
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#trust">Results</a></li>
+                <li><a href="#creative">Creative Work</a></li>
+                <li><a href="#process">Process</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <a href="#contact" class="btn btn-teal-gradient mt-6 w-full text-center">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="hero" class="relative section hero-section">
+        
+        <div class="container hero-grid relative z-10">
+            <div class="hero-content fade-up">
+                <h1 class="hero-title mb-6">
+                    <span class="hero-line">Lower acquisition cost.</span>
+                    <span class="hero-line italic text-gold">Better-performing ads.</span>
+                </h1>
+                <p class="hero-subtitle mb-10">We align creatives, targeting, and strategy to reduce CPC and scale profitable campaigns for D2C brands.</p>
+                <div class="hero-actions">
+                    <a href="#contact" class="btn btn-gold-gradient">Optimize Your Ads &rarr;</a>
+                    <a href="#contact" class="btn btn-outline-teal">Start Your Digital Presence</a>
+                </div>
+            </div>
+
+            <div class="hero-demo fade-up stagger-1">
+                <div class="glass-card demo-card shadow-glow">
+                    <div class="demo-header">
+                        <div class="demo-user">
+                            <div class="avatar">RC</div>
+                            <div>
+                                <h4>Brand Performance</h4>
+                                <span class="text-xs opacity-70">Across All Portfolios</span>
+                            </div>
+                        </div>
+                        <div class="live-tag">● LIVE</div>
+                    </div>
+                    <div class="demo-metrics">
+                        <div class="m-item"><span class="text-teal">-40%</span><label>CPC Reduction</label></div>
+                        <div class="m-item"><span>98%</span><label>Client Satisfaction</label></div>
+                        <div class="m-item"><span class="text-gold">20+</span><label>Projects Completed</label></div>
+                    </div>
+                    <div class="chart-area mt-4">
+                        <label class="text-xs opacity-70 font-bold tracking-wider mb-2 block">PAST YEAR PERFORMANCE <span class="text-teal ml-2">↑ 45.2%</span></label>
+                        <div class="mini-chart">
+                            <div class="bar" style="height:30%"></div><div class="bar" style="height:45%"></div>
+                            <div class="bar" style="height:35%"></div><div class="bar" style="height:60%"></div>
+                            <div class="bar" style="height:50%"></div><div class="bar" style="height:75%"></div>
+                            <div class="bar bar-active" style="height:100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+
+    <!-- Trust / Social Proof Section -->
+    <section id="trust" class="section relative">
+        <div class="container text-center max-w-4xl relative z-10">
+            <div class="fade-up">
+                <div class="badge mb-4 mx-auto inline-flex"><i class="fas fa-chart-line text-gold mr-2"></i> DATA-DRIVEN</div>
+                <h2 class="section-title">Proven <span class="text-gold italic">Performance</span></h2>
+            </div>
+            
+            <div class="stats-grid mt-12 grid grid-cols-1 md-grid-cols-3 gap-6 fade-up stagger-1">
+                <div class="glass-card stat-card border-top-teal interactive-card p-6">
+                    <h3 class="text-4xl font-playfair text-teal mb-2">20+</h3>
+                    <p class="text-sm opacity-70 text-uppercase tracking-wider">Projects Done<br>in Past Year</p>
+                </div>
+                <div class="glass-card stat-card border-top-gold interactive-card transform scale-105 p-6" style="z-index: 2;">
+                    <h3 class="text-5xl font-playfair text-gold mb-2">3,000+</h3>
+                    <p class="text-sm opacity-70 text-uppercase tracking-wider">Creative Assets<br>Delivered (Past Year)</p>
+                </div>
+                <div class="glass-card stat-card border-top-teal interactive-card p-6">
+                    <h3 class="text-4xl font-playfair text-teal mb-2">5.3x</h3>
+                    <p class="text-sm opacity-70 text-uppercase tracking-wider">Average ROAS<br>Across Campaigns</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Marquee of screenshots -->
+        <div class="trust-marquee mt-20 fade-up stagger-2">
+            <div class="marquee-content">
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Dashboard Screen"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Analytics Screen"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="CRM Screen"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1542744094-24638eff58bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Marketing Screen"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1621746200236-1e6ac22657e0?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="App Screen"></div>
+                <!-- Duplicates for infinite scroll -->
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Dashboard Screen"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Analytics Screen"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="CRM Screen"></div>
+                <div class="marquee-item"><img src="https://images.unsplash.com/photo-1542744094-24638eff58bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Marketing Screen"></div>
+            </div>
+        </div>
+    </section>
+
+    </section>
+
+    <!-- Who We Work With Section -->
+    <section id="audience" class="section relative overflow-hidden">
+        <div class="container text-center max-w-3xl relative z-10">
+            <div class="fade-up">
+                <h2 class="section-title">Who We Work With</h2>
+                <div class="glass-card p-8 interactive-card mt-8 text-left inline-block w-full">
+                    <p class="text-lg opacity-80 mb-6">We work with D2C brands that are either:</p>
+                    <ul class="text-lg opacity-90 space-y-4 mb-6">
+                        <li class="flex items-center gap-3"><i class="fas fa-arrow-right text-teal"></i> Running ads but not seeing efficiency</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-arrow-right text-teal"></i> Planning to launch their digital presence</li>
+                    </ul>
+                    <p class="text-lg font-bold text-gold border-t border-glass pt-6 mt-6">
+                        Our focus is not industries. Our focus is performance.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Studies Section -->
+    <section id="creative" class="section relative overflow-hidden">
+        <div class="container relative z-10">
+            <div class="text-center mb-12 fade-up">
+                <h2 class="section-title">Case Studies</h2>
+            </div>
+
+            <div class="portfolio-grid grid-cols-1 md-grid-cols-3 gap-6 grid mt-12">
+                <!-- Card 1 -->
+                <div class="glass-card p-8 interactive-card text-left flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4">High CPC in D2C brand</h3>
+                        <p class="opacity-70 mb-2 flex items-center gap-2"><i class="fas fa-tools text-teal"></i> Rebuilt creatives + targeting</p>
+                        <p class="font-bold text-gold flex items-center gap-2"><i class="fas fa-check-circle"></i> -38% CPC, +2.1x ROAS</p>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-card p-8 interactive-card text-left flex flex-col justify-between border-top-gold transform scale-105" style="z-index: 2;">
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4">Low engagement campaigns</h3>
+                        <p class="opacity-70 mb-2 flex items-center gap-2"><i class="fas fa-tools text-teal"></i> Visual + copy restructuring</p>
+                        <p class="font-bold text-gold flex items-center gap-2"><i class="fas fa-check-circle"></i> +300% engagement, lower CPA</p>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-card p-8 interactive-card text-left flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4">No digital presence</h3>
+                        <p class="opacity-70 mb-2 flex items-center gap-2"><i class="fas fa-tools text-teal"></i> Built assets + launched campaigns</p>
+                        <p class="font-bold text-gold flex items-center gap-2"><i class="fas fa-check-circle"></i> Consistent lead flow in 30 days</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process" class="section relative border-t border-glass overflow-hidden">
+        <div class="container max-w-4xl relative z-10">
+            <div class="text-center mb-20 fade-up">
+                <div class="badge mb-4 mx-auto inline-flex">THE FRAMEWORK</div>
+                <h2 class="section-title">The Masterplan</h2>
+                <p class="section-subtitle mx-auto">Our tested and proven 3-step pipeline that transforms raw ideas into a visual masterpiece that converts.</p>
+            </div>
+            
+            <div class="timeline relative pl-10 md-pl-16 border-l border-glass ml-4 md-ml-8">
+                <div class="timeline-step fade-up mb-16 relative">
+                    <div class="step-num bg-teal absolute">1</div>
+                    <div class="glass-card funnel-card p-8 interactive-card">
+                        <div class="flex flex-col md-flex-row gap-6 items-start md-items-center mb-4">
+                            <div class="f-icon w-14 h-14 bg-glass rounded-xl flex items-center justify-center text-teal text-2xl shrink-0"><i class="fas fa-search"></i></div>
+                            <div>
+                                <h3 class="text-2xl font-playfair text-gold mb-2">Discover</h3>
+                                <p class="opacity-80 leading-relaxed text-sm md-text-base">We analyze your current performance, identify inefficiencies, and define growth opportunities.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-step fade-up stagger-1 mb-16 relative">
+                    <div class="step-num bg-gold absolute">2</div>
+                    <div class="glass-card funnel-card p-8 interactive-card border-l-2 border-gold border-t border-r border-b border-glass">
+                        <div class="flex flex-col md-flex-row gap-6 items-start md-items-center mb-4">
+                            <div class="f-icon w-14 h-14 bg-glass-gold rounded-xl flex items-center justify-center text-gold text-2xl shrink-0"><i class="fas fa-layer-group"></i></div>
+                            <div>
+                                <h3 class="text-2xl font-playfair text-white mb-2">Build</h3>
+                                <p class="opacity-80 leading-relaxed text-sm md-text-base">We create and align creatives, assets, and targeting based on strategy.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-step fade-up stagger-2 relative">
+                    <div class="step-num bg-teal absolute">3</div>
+                    <div class="glass-card funnel-card p-8 interactive-card">
+                        <div class="flex flex-col md-flex-row gap-6 items-start md-items-center mb-4">
+                            <div class="f-icon w-14 h-14 bg-glass rounded-xl flex items-center justify-center text-teal text-2xl shrink-0"><i class="fas fa-chart-line"></i></div>
+                            <div>
+                                <h3 class="text-2xl font-playfair text-gold mb-2">Scale</h3>
+                                <p class="opacity-80 leading-relaxed text-sm md-text-base">We launch, monitor, and continuously optimize to reduce costs and improve returns.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / Contact -->
+    <footer id="contact" class="footer border-t border-glass relative pt-20 pb-8 bg-black overflow-hidden">
+        <!-- background glow -->
+        <div class="ambient-glow glow-gold" style="top: auto; bottom: -200px; left: 50%; transform: translateX(-50%); opacity: 0.2; width: 600px; height: 600px;"></div>
+        
+        <div class="container relative z-10">
+            <div class="grid grid-cols-1 md-grid-cols-12 gap-12">
+                <div class="md-col-span-5 fade-up">
+                    <a href="#" class="logo mb-6 inline-block text-3xl">Rise n <span class="text-teal">Clicks</span></a>
+                    <p class="mb-8 opacity-70 leading-relaxed max-w-sm">A performance-driven agency scaling D2C brands through aligned strategy, assets, and execution.</p>
+                    <div class="social-links flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-glass flex items-center justify-center hover-bg-gold hover-text-dark transition-all"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-glass flex items-center justify-center hover-bg-gold hover-text-dark transition-all"><i class="fab fa-dribbble"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-glass flex items-center justify-center hover-bg-gold hover-text-dark transition-all"><i class="fab fa-vimeo-v"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-glass flex items-center justify-center hover-bg-gold hover-text-dark transition-all"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="md-col-span-3 fade-up stagger-1">
+                    <h4 class="text-xl font-playfair text-white mb-6">Navigation</h4>
+                    <ul class="space-y-3 opacity-80">
+                        <li><a href="#hero" class="hover-text-gold transition-colors inline-block hover-translate-x">Home</a></li>
+                        <li><a href="#trust" class="hover-text-gold transition-colors inline-block hover-translate-x">Our Results</a></li>
+                        <li><a href="#creative" class="hover-text-gold transition-colors inline-block hover-translate-x">Creative Work</a></li>
+                        <li><a href="#process" class="hover-text-gold transition-colors inline-block hover-translate-x">The Masterplan</a></li>
+                    </ul>
+                </div>
+                
+                <div class="md-col-span-4 fade-up stagger-2">
+                    <div class="glass-card p-6 border-gold border-opacity-30">
+                        <h4 class="text-xl font-playfair text-gold mb-2">Get Your Ad Performance Reviewed</h4>
+                        <p class="mb-6 text-sm opacity-80">We identify where your budget is leaking and how to fix it.</p>
+                        <form class="contact-form flex flex-col gap-3">
+                            <input type="text" placeholder="Your Name" required class="w-full bg-glass border border-glass rounded-lg px-4 py-3 text-white focus-border-gold outline-none transition-colors">
+                            <input type="email" placeholder="Your Email Address" required class="w-full bg-glass border border-glass rounded-lg px-4 py-3 text-white focus-border-gold outline-none transition-colors">
+                            <button type="submit" class="btn btn-gold-gradient w-full py-3 mt-2 font-bold tracking-wide rounded-lg text-dark">Request Review <i class="fas fa-arrow-right ml-2 text-sm"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom mt-20 pt-8 border-t border-glass text-center text-sm opacity-60 flex flex-col md-flex-row justify-between items-center gap-4">
+                <p>&copy; 2026 Rise n Clicks. All rights reserved.</p>
+                <div class="footer-legal flex gap-6">
+                    <a href="#" class="hover-text-gold transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover-text-gold transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
