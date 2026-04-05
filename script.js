@@ -312,37 +312,51 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 14. ANIMATED STAT COUNTERS (count up when scrolled into view)
-    const statEls = document.querySelectorAll('[data-count]');
-    if (statEls.length) {
-        const counterObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
-                const el      = entry.target;
-                const target  = parseFloat(el.dataset.count);
-                const suffix  = el.dataset.suffix  || '';
-                const isComma = el.dataset.comma   === 'true';
-                const isDec   = el.dataset.decimal === 'true';
-                const duration = 1800;
-                const start    = performance.now();
+    const initCounters = () => {
+        const statEls = document.querySelectorAll('[data-count]');
+        if (statEls.length) {
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    
+                    const el      = entry.target;
+                    const target  = parseFloat(el.dataset.count);
+                    const suffix  = el.dataset.suffix  || '';
+                    const isComma = el.dataset.comma   === 'true';
+                    const isDec   = el.dataset.decimal === 'true';
+                    const duration = 1800; // 1.8 seconds
+                    let start = null;
 
-                function tick(now) {
-                    const t    = Math.min((now - start) / duration, 1);
-                    const ease = 1 - Math.pow(1 - t, 3); // cubic ease-out
-                    const val  = target * ease;
-                    let display;
-                    if (isDec)      display = val.toFixed(1);
-                    else if (isComma) display = Math.floor(val).toLocaleString();
-                    else            display = Math.floor(val);
-                    el.textContent = display + suffix;
-                    if (t < 1) requestAnimationFrame(tick);
-                }
-                requestAnimationFrame(tick);
-                counterObserver.unobserve(el);
-            });
-        }, { threshold: 0.6 });
+                    function tick(now) {
+                        if (!start) start = now;
+                        const progress = Math.min((now - start) / duration, 1);
+                        const ease = 1 - Math.pow(1 - progress, 3); // cubic ease-out
+                        const val  = target * ease;
+                        
+                        let display;
+                        if (isDec)      display = val.toFixed(1);
+                        else if (isComma) display = Math.floor(Math.abs(val)).toLocaleString();
+                        else            display = Math.floor(Math.abs(val));
+                        
+                        // Handle negative sign correctly for integers
+                        const sign = target < 0 ? '-' : '';
+                        el.textContent = sign + display + suffix;
+                        
+                        if (progress < 1) requestAnimationFrame(tick);
+                        else el.textContent = (target < 0 ? '-' : '') + (isDec ? target.toFixed(1) : (isComma ? Math.floor(Math.abs(target)).toLocaleString() : Math.floor(Math.abs(target)))) + suffix;
+                    }
+                    requestAnimationFrame(tick);
+                    counterObserver.unobserve(el);
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-        statEls.forEach(el => counterObserver.observe(el));
-    }
+            statEls.forEach(el => counterObserver.observe(el));
+        }
+    };
+    
+    // Run immediately and after a short delay for safety
+    initCounters();
+    setTimeout(initCounters, 1000);
 
     // 15. MOBILE SWIPE HINT — shows for 3s then fades
     const swipeHint = document.getElementById('swipe-hint');
