@@ -532,12 +532,12 @@ button { cursor: pointer; border: none; font-family: inherit; }
 @media (max-width: 480px) {
     .section { padding: 80px 0; }
     .hero-section { padding-top: 120px; }
-    .hero-grid { gap: 60px; }
-    .hero-title { font-size: 2rem; margin-bottom: 20px; }
-    .hero-subtitle { font-size: 1rem; padding: 0 10px; margin-bottom: 30px; line-height: 1.5; }
+    .hero-grid { gap: 60px; grid-template-columns: 1fr; }
+    .hero-demo { display: none; /* Hide interactive card to declutter mobile */ }
+    .hero-title { font-size: 2rem; margin-bottom: 20px; text-align: center; }
+    .hero-subtitle { font-size: 1rem; padding: 0 10px; margin-bottom: 30px; line-height: 1.5; text-align: center; }
     .hero-actions { flex-direction: column; width: 100%; gap: 16px; padding: 0 10px; }
     .hero-actions .btn { width: 100%; padding: 16px 20px; }
-    .demo-card { transform: scale(0.9); padding: 25px; }
     .stat-card h3 { font-size: 2.2rem; }
     .marquee-item { width: 260px; height: 160px; }
     .timeline-step { margin-bottom: 40px; }
