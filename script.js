@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2. CREATE THE "PERFORMANCE CORE" (Geometric Wireframe Infrastructure)
     const coreGroup = new THREE.Group();
     if (window.innerWidth <= 480) {
-        coreGroup.position.y = 25;  // Top center visually (Rule of Thirds)
+        coreGroup.position.y = 45;  // Shifted high up to hit strict top-center (not center)
         coreGroup.position.x = 0;   // Centered horizontally
     } else {
         coreGroup.position.y = -25; // Lower for desktop text balance
