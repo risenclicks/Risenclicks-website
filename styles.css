@@ -296,6 +296,88 @@ button { cursor: pointer; border: none; font-family: inherit; }
     width: 100%;
     /* No background! Let WebGL show through */
 }
+/* SCROLL PROGRESS BAR */
+#scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--color-teal), var(--color-gold));
+    z-index: 9999;
+    transition: width 0.1s linear;
+    border-radius: 0 2px 2px 0;
+}
+
+/* CUSTOM CURSOR (desktop only) */
+#custom-cursor, #custom-cursor-trail {
+    pointer-events: none;
+    position: fixed;
+    border-radius: 50%;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s;
+}
+#custom-cursor {
+    width: 12px; height: 12px;
+    background: var(--color-gold);
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.8), 0 0 24px rgba(212, 175, 55, 0.4);
+    transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
+}
+#custom-cursor-trail {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    transition: left 0.12s ease, top 0.12s ease;
+}
+body:not(:hover) #custom-cursor,
+body:not(:hover) #custom-cursor-trail { opacity: 0; }
+@media (hover: none) {
+    #custom-cursor, #custom-cursor-trail { display: none; }
+}
+
+/* SWIPE HINT (mobile only) */
+#swipe-hint {
+    display: none;
+    position: fixed;
+    bottom: 20vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 1;
+    transition: opacity 1s ease;
+    pointer-events: none;
+}
+#swipe-hint.fade-out { opacity: 0; }
+#swipe-hint .swipe-icon {
+    font-size: 2rem;
+    color: var(--color-teal);
+    animation: spin-hint 2s linear infinite;
+    text-shadow: 0 0 12px var(--color-teal);
+}
+#swipe-hint span {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-teal);
+    opacity: 0.8;
+}
+@keyframes spin-hint {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+@media (max-width: 480px) {
+    #swipe-hint { display: flex; }
+}
+
+/* CONTACT SECTION */
+.contact-section { background: transparent; }
+.contact-form-card input:focus,
+.contact-form-card textarea:focus {
+    border-color: var(--color-gold) !important;
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15);
+}
 
 /* NAVBAR */
 .navbar {

@@ -13,6 +13,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 <body>
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress"></div>
+
+    <!-- Custom Cursor (desktop only) -->
+    <div id="custom-cursor"></div>
+    <div id="custom-cursor-trail"></div>
+
     <!-- WebGL Background -->
     <canvas id="webgl-canvas"></canvas>
     
@@ -141,15 +148,15 @@
             
             <div class="stats-grid mt-12 grid grid-cols-1 md-grid-cols-3 gap-6 fade-up stagger-1">
                 <div class="glass-card stat-card border-top-teal interactive-card p-6">
-                    <h3 class="text-4xl font-playfair text-teal mb-2">20+</h3>
+                    <h3 class="text-4xl font-playfair text-teal mb-2" data-count="20" data-suffix="+">0+</h3>
                     <p class="text-sm opacity-70 text-uppercase tracking-wider">Projects Done<br>in Past Year</p>
                 </div>
                 <div class="glass-card stat-card border-top-gold interactive-card transform scale-105 p-6" style="z-index: 2;">
-                    <h3 class="text-5xl font-playfair text-gold mb-2">3,000+</h3>
+                    <h3 class="text-5xl font-playfair text-gold mb-2" data-count="3000" data-suffix="+" data-comma="true">0+</h3>
                     <p class="text-sm opacity-70 text-uppercase tracking-wider">Creative Assets<br>Delivered (Past Year)</p>
                 </div>
                 <div class="glass-card stat-card border-top-teal interactive-card p-6">
-                    <h3 class="text-4xl font-playfair text-teal mb-2">5.3x</h3>
+                    <h3 class="text-4xl font-playfair text-teal mb-2" data-count="5.3" data-suffix="x" data-decimal="true">0x</h3>
                     <p class="text-sm opacity-70 text-uppercase tracking-wider">Average ROAS<br>Across Campaigns</p>
                 </div>
             </div>
@@ -281,57 +288,64 @@
         </div>
     </section>
 
-    <!-- Footer / Contact -->
-    <footer id="contact" class="footer border-t border-glass relative pt-20 pb-8 bg-black overflow-hidden">
-        <!-- background glow -->
-        <div class="ambient-glow glow-gold" style="top: auto; bottom: -200px; left: 50%; transform: translateX(-50%); opacity: 0.2; width: 600px; height: 600px;"></div>
-        
+    <!-- Contact Section -->
+    <section id="contact" class="section contact-section relative overflow-hidden">
+        <div class="ambient-glow glow-gold" style="top:-100px;left:50%;transform:translateX(-50%);opacity:0.15;width:600px;height:600px;"></div>
         <div class="container relative z-10">
-            <div class="grid grid-cols-1 md-grid-cols-12 gap-12">
+            <div class="text-center mb-16 fade-up">
+                <div class="badge mb-4 mx-auto inline-flex"><i class="fas fa-envelope text-gold mr-2"></i> GET IN TOUCH</div>
+                <h2 class="section-title">Ready to <span class="text-gold italic">Scale?</span></h2>
+                <p class="section-subtitle mx-auto mt-4">We identify where your budget is leaking and how to fix it — fast.</p>
+            </div>
+            <div class="contact-form-card glass-card p-10 max-w-2xl mx-auto fade-up stagger-1" style="border-top: 2px solid var(--color-gold);">
+                <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="flex flex-col gap-5">
+                    <div class="grid md-grid-cols-2 gap-5" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                        <input type="text" name="name" placeholder="Your Name" required class="w-full bg-glass border border-glass rounded-lg px-4 py-3 text-white outline-none" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 18px;color:#fff;font-family:inherit;font-size:0.95rem;transition:border-color 0.3s;">
+                        <input type="email" name="email" placeholder="Your Email" required class="w-full bg-glass border border-glass rounded-lg px-4 py-3 text-white outline-none" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 18px;color:#fff;font-family:inherit;font-size:0.95rem;transition:border-color 0.3s;">
+                    </div>
+                    <textarea name="message" placeholder="Tell us about your brand and current ad challenges..." rows="4" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 18px;color:#fff;font-family:inherit;font-size:0.95rem;resize:vertical;outline:none;transition:border-color 0.3s;"></textarea>
+                    <button type="submit" class="btn btn-gold-gradient w-full py-4 font-bold tracking-wide" style="font-size:1rem;">Request Free Ad Review <i class="fas fa-arrow-right ml-2"></i></button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer border-t border-glass relative py-10 bg-black overflow-hidden">
+        <div class="container relative z-10">
+            <div class="grid grid-cols-1 md-grid-cols-12 gap-8 items-center">
                 <div class="md-col-span-5 fade-up">
-                    <a href="#" class="logo mb-6 inline-block text-3xl">Rise n <span class="text-teal">Clicks</span></a>
-                    <p class="mb-8 opacity-70 leading-relaxed max-w-sm">A performance-driven agency scaling D2C brands through aligned strategy, assets, and execution.</p>
-                    <div class="social-links flex gap-4">
+                    <a href="#" class="logo mb-3 inline-block text-2xl">Rise n <span class="text-teal">Clicks</span></a>
+                    <p class="opacity-60 text-sm leading-relaxed max-w-xs">A performance-driven agency scaling D2C brands through strategy, assets, and execution.</p>
+                    <div class="social-links flex gap-4 mt-5">
                         <a href="#" class="w-10 h-10 rounded-full bg-glass flex items-center justify-center hover-bg-gold hover-text-dark transition-all"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-glass flex items-center justify-center hover-bg-gold hover-text-dark transition-all"><i class="fab fa-dribbble"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-glass flex items-center justify-center hover-bg-gold hover-text-dark transition-all"><i class="fab fa-vimeo-v"></i></a>
                         <a href="#" class="w-10 h-10 rounded-full bg-glass flex items-center justify-center hover-bg-gold hover-text-dark transition-all"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-glass flex items-center justify-center hover-bg-gold hover-text-dark transition-all"><i class="fab fa-dribbble"></i></a>
                     </div>
                 </div>
-                
-                <div class="md-col-span-3 fade-up stagger-1">
-                    <h4 class="text-xl font-playfair text-white mb-6">Navigation</h4>
-                    <ul class="space-y-3 opacity-80">
-                        <li><a href="#hero" class="hover-text-gold transition-colors inline-block hover-translate-x">Home</a></li>
-                        <li><a href="#trust" class="hover-text-gold transition-colors inline-block hover-translate-x">Our Results</a></li>
-                        <li><a href="#creative" class="hover-text-gold transition-colors inline-block hover-translate-x">Creative Work</a></li>
-                        <li><a href="#process" class="hover-text-gold transition-colors inline-block hover-translate-x">The Masterplan</a></li>
-                    </ul>
-                </div>
-                
-                <div class="md-col-span-4 fade-up stagger-2">
-                    <div class="glass-card p-6 border-gold border-opacity-30">
-                        <h4 class="text-xl font-playfair text-gold mb-2">Get Your Ad Performance Reviewed</h4>
-                        <p class="mb-6 text-sm opacity-80">We identify where your budget is leaking and how to fix it.</p>
-                        <form class="contact-form flex flex-col gap-3">
-                            <input type="text" placeholder="Your Name" required class="w-full bg-glass border border-glass rounded-lg px-4 py-3 text-white focus-border-gold outline-none transition-colors">
-                            <input type="email" placeholder="Your Email Address" required class="w-full bg-glass border border-glass rounded-lg px-4 py-3 text-white focus-border-gold outline-none transition-colors">
-                            <button type="submit" class="btn btn-gold-gradient w-full py-3 mt-2 font-bold tracking-wide rounded-lg text-dark">Request Review <i class="fas fa-arrow-right ml-2 text-sm"></i></button>
-                        </form>
+                <div class="md-col-span-4 md-col-start-7 fade-up stagger-1">
+                    <h4 class="text-sm font-bold uppercase tracking-wider opacity-50 mb-4">Navigate</h4>
+                    <div class="flex gap-8 flex-wrap">
+                        <a href="#hero" class="opacity-70 hover-text-gold transition-colors text-sm">Home</a>
+                        <a href="#trust" class="opacity-70 hover-text-gold transition-colors text-sm">Results</a>
+                        <a href="#creative" class="opacity-70 hover-text-gold transition-colors text-sm">Work</a>
+                        <a href="#process" class="opacity-70 hover-text-gold transition-colors text-sm">Process</a>
+                        <a href="#contact" class="opacity-70 hover-text-gold transition-colors text-sm">Contact</a>
                     </div>
                 </div>
             </div>
-            
-            <div class="footer-bottom mt-20 pt-8 border-t border-glass text-center text-sm opacity-60 flex flex-col md-flex-row justify-between items-center gap-4">
+            <div class="footer-bottom mt-8 pt-6 border-t border-glass text-center text-sm opacity-40">
                 <p>&copy; 2026 Rise n Clicks. All rights reserved.</p>
-                <div class="footer-legal flex gap-6">
-                    <a href="#" class="hover-text-gold transition-colors">Privacy Policy</a>
-                    <a href="#" class="hover-text-gold transition-colors">Terms of Service</a>
-                </div>
             </div>
         </div>
     </footer>
     </main>
+
+    <!-- Mobile swipe hint -->
+    <div id="swipe-hint">
+        <div class="swipe-icon">↻</div>
+        <span>Spin the globe</span>
+    </div>
 
     <script src="script.js"></script>
 </body>

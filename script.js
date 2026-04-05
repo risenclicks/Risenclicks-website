@@ -273,4 +273,83 @@ document.addEventListener("DOMContentLoaded", () => {
         const mobileDash = document.querySelector('.mobile-dashboard-section');
         if (mobileDash) mobileDash.style.display = 'block';
     }
+
+    // 12. SCROLL PROGRESS BAR
+    const progressBar = document.getElementById('scroll-progress');
+    if (progressBar) {
+        window.addEventListener('scroll', () => {
+            const scrollTop  = window.scrollY;
+            const docHeight  = document.documentElement.scrollHeight - window.innerHeight;
+            progressBar.style.width = `${(scrollTop / docHeight) * 100}%`;
+        }, { passive: true });
+    }
+
+    // 13. CUSTOM CURSOR (desktop pointer devices only)
+    const cursor      = document.getElementById('custom-cursor');
+    const cursorTrail = document.getElementById('custom-cursor-trail');
+    if (cursor && cursorTrail && window.matchMedia('(hover: hover)').matches) {
+        document.body.style.cursor = 'none';
+        let cx = -100, cy = -100;
+        document.addEventListener('mousemove', (e) => {
+            cx = e.clientX; cy = e.clientY;
+            cursor.style.left = cx + 'px';
+            cursor.style.top  = cy + 'px';
+            // Trail follows with a tiny CSS transition delay
+            cursorTrail.style.left = cx + 'px';
+            cursorTrail.style.top  = cy + 'px';
+        });
+        // Scale cursor on clickable elements
+        document.querySelectorAll('a, button, .btn, .interactive-card').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'translate(-50%,-50%) scale(1.8)';
+                cursor.style.opacity   = '0.7';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+                cursor.style.opacity   = '1';
+            });
+        });
+    }
+
+    // 14. ANIMATED STAT COUNTERS (count up when scrolled into view)
+    const statEls = document.querySelectorAll('[data-count]');
+    if (statEls.length) {
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const el      = entry.target;
+                const target  = parseFloat(el.dataset.count);
+                const suffix  = el.dataset.suffix  || '';
+                const isComma = el.dataset.comma   === 'true';
+                const isDec   = el.dataset.decimal === 'true';
+                const duration = 1800;
+                const start    = performance.now();
+
+                function tick(now) {
+                    const t    = Math.min((now - start) / duration, 1);
+                    const ease = 1 - Math.pow(1 - t, 3); // cubic ease-out
+                    const val  = target * ease;
+                    let display;
+                    if (isDec)      display = val.toFixed(1);
+                    else if (isComma) display = Math.floor(val).toLocaleString();
+                    else            display = Math.floor(val);
+                    el.textContent = display + suffix;
+                    if (t < 1) requestAnimationFrame(tick);
+                }
+                requestAnimationFrame(tick);
+                counterObserver.unobserve(el);
+            });
+        }, { threshold: 0.6 });
+
+        statEls.forEach(el => counterObserver.observe(el));
+    }
+
+    // 15. MOBILE SWIPE HINT — shows for 3s then fades
+    const swipeHint = document.getElementById('swipe-hint');
+    if (swipeHint && window.innerWidth <= 480) {
+        setTimeout(() => {
+            swipeHint.classList.add('fade-out');
+            setTimeout(() => swipeHint.style.display = 'none', 1000);
+        }, 3000);
+    }
 });
