@@ -530,13 +530,16 @@ button { cursor: pointer; border: none; font-family: inherit; }
 }
 
 @media (max-width: 480px) {
-    .section { padding: 60px 0; }
-    .hero-title { font-size: 2.2rem; }
-    .hero-actions { flex-direction: column; width: 100%; gap: 12px; }
-    .hero-actions .btn { width: 100%; }
-    .stat-card h3 { font-size: 2.5rem; }
-    .marquee-item { width: 280px; height: 180px; }
+    .section { padding: 80px 0; }
+    .hero-section { padding-top: 120px; }
+    .hero-grid { gap: 60px; }
+    .hero-title { font-size: 2rem; margin-bottom: 20px; }
+    .hero-subtitle { font-size: 1rem; padding: 0 10px; margin-bottom: 30px; line-height: 1.5; }
+    .hero-actions { flex-direction: column; width: 100%; gap: 16px; padding: 0 10px; }
+    .hero-actions .btn { width: 100%; padding: 16px 20px; }
+    .demo-card { transform: scale(0.9); padding: 25px; }
+    .stat-card h3 { font-size: 2.2rem; }
+    .marquee-item { width: 260px; height: 160px; }
     .timeline-step { margin-bottom: 40px; }
-    .demo-card { padding: 20px; }
     .m-item span { font-size: 16px; }
 }
