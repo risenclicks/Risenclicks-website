@@ -28,10 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2. CREATE THE "PERFORMANCE CORE" (Geometric Wireframe Infrastructure)
     const coreGroup = new THREE.Group();
     if (window.innerWidth <= 480) {
-        coreGroup.position.y = 10;  // Move globe up to the top area on mobile
-        coreGroup.position.x = 0;   // Center horizontally
+        coreGroup.position.y = 25;  // Top center visually (Rule of Thirds)
+        coreGroup.position.x = 0;   // Centered horizontally
     } else {
-        coreGroup.position.y = -25; // Moved lower for desktop text balance
+        coreGroup.position.y = -25; // Lower for desktop text balance
         coreGroup.position.x = 15;
     }
     scene.add(coreGroup);
@@ -87,12 +87,38 @@ document.addEventListener("DOMContentLoaded", () => {
         mouseY = (event.clientY - windowHalfY);
     });
 
-    document.addEventListener('touchmove', (event) => {
-        if(event.touches.length > 0) {
-            mouseX = (event.touches[0].clientX - windowHalfX);
-            mouseY = (event.touches[0].clientY - windowHalfY);
+    // Touch specific variables for manual spinning
+    let isDragging = false;
+    let previousTouchX = 0;
+    let previousTouchY = 0;
+
+    document.addEventListener('touchstart', (e) => {
+        if(e.touches.length > 0) {
+            isDragging = true;
+            previousTouchX = e.touches[0].clientX;
+            previousTouchY = e.touches[0].clientY;
         }
     }, {passive: true});
+
+    document.addEventListener('touchmove', (e) => {
+        if(isDragging && e.touches.length > 0) {
+            const touchX = e.touches[0].clientX;
+            const touchY = e.touches[0].clientY;
+            const deltaX = touchX - previousTouchX;
+            const deltaY = touchY - previousTouchY;
+            
+            // Apply direct manual rotation to the globe based on finger swipe
+            coreGroup.rotation.y += deltaX * 0.01;
+            coreGroup.rotation.x += deltaY * 0.01;
+
+            previousTouchX = touchX;
+            previousTouchY = touchY;
+        }
+    }, {passive: true});
+
+    document.addEventListener('touchend', () => {
+        isDragging = false;
+    });
 
     // 4. SCROLL TO CAMERA SYNC (GSAP)
     // We bind the camera's Z and Y position to the page scroll
