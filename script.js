@@ -27,6 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 2. CREATE THE "PERFORMANCE CORE" (Geometric Wireframe Infrastructure)
     const coreGroup = new THREE.Group();
+    coreGroup.position.y = -25; // Moved lower to prevent text overlapping
+    coreGroup.position.x = 15;  // Shifted slightly right towards the blank space
     scene.add(coreGroup);
 
     // Main Core - Icosahedron
