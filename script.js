@@ -1,303 +1,326 @@
 // Wait for DOM
 document.addEventListener("DOMContentLoaded", () => {
-    
+
     // 1. THREE.JS SETUP
     const canvas = document.getElementById('webgl-canvas');
     if (!canvas) return;
 
     const scene = new THREE.Scene();
-    
-    // Add subtle fog for depth
     scene.fog = new THREE.FogExp2('#020202', 0.0015);
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    // Move camera back to see the core
     camera.position.z = 100;
     camera.position.y = 0;
 
-    const renderer = new THREE.WebGLRenderer({
-        canvas: canvas,
-        antialias: true,
-        alpha: true // Important for background color bleeding
-    });
-    
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor('#020202', 1);
 
-    // 2. CREATE THE "PERFORMANCE CORE" (Geometric Wireframe Infrastructure)
+    // 2. GLOBE — "PERFORMANCE CORE"
     const coreGroup = new THREE.Group();
     const isMobile = window.innerWidth <= 480;
-    if (isMobile) {
-        coreGroup.position.y = 60;  // High top-center, clear gap above headline
-        coreGroup.position.x = 0;
-    } else {
-        coreGroup.position.y = -25;
-        coreGroup.position.x = 15;
-    }
+
+    // Mobile: sit ~30% from top (below navbar, clear gap above headline)
+    // Desktop: offset right-bottom for two-column hero layout
+    coreGroup.position.y = isMobile ? 30 : -25;
+    coreGroup.position.x = isMobile ? 0 : 15;
     scene.add(coreGroup);
 
-    // Main Core - Icosahedron
     const coreGeometry = new THREE.IcosahedronGeometry(15, 1);
     const coreMaterial = new THREE.MeshBasicMaterial({
-        color: 0x00F0FF,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.15
+        color: 0x00F0FF, wireframe: true, transparent: true, opacity: 0.15
     });
     const coreMesh = new THREE.Mesh(coreGeometry, coreMaterial);
     coreGroup.add(coreMesh);
 
-    // Orbiting KPIs / Data Nodes (Points)
+    // 3. PARTICLES
     const particlesGeometry = new THREE.BufferGeometry();
     const particlesCount = 700;
     const posArray = new Float32Array(particlesCount * 3);
-
-    for(let i=0; i < particlesCount * 3; i++) {
-        // Spread particles out along the depth (Z-axis) to fly through them
+    for (let i = 0; i < particlesCount * 3; i++) {
         posArray[i] = (Math.random() - 0.5) * 200;
-        // Extend Z vastly backwards so we scroll into it
-        if (i%3 === 2) {
-            posArray[i] = (Math.random() - 0.5) * 800 - 200;
-        }
+        if (i % 3 === 2) posArray[i] = (Math.random() - 0.5) * 800 - 200;
     }
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-
     const particlesMaterial = new THREE.PointsMaterial({
-        size: 0.8,
-        color: 0xD4AF37,
-        transparent: true,
-        opacity: 0.6,
+        size: 0.8, color: 0xD4AF37, transparent: true, opacity: 0.6,
         blending: THREE.AdditiveBlending
     });
-
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
 
-    // 3. MOUSE / CURSOR REACTIVITY
-    let mouseX = 0;
-    let mouseY = 0;
-    let targetX = 0;
-    let targetY = 0;
-
+    // 4. MOUSE / TOUCH REACTIVITY
+    // targetX/Y drive scene.rotation lerp — both mouse and touch write to them
+    let mouseX = 0, mouseY = 0;
+    let targetX = 0, targetY = 0;
     const windowHalfX = window.innerWidth / 2;
     const windowHalfY = window.innerHeight / 2;
 
-    document.addEventListener('mousemove', (event) => {
-        mouseX = (event.clientX - windowHalfX);
-        mouseY = (event.clientY - windowHalfY);
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX - windowHalfX;
+        mouseY = e.clientY - windowHalfY;
     });
 
-    // Touch specific variables for manual spinning
-    let isDragging = false;
-    let previousTouchX = 0;
-    let previousTouchY = 0;
+    // Touch: drag-to-spin globe AND update mouse targets so particles follow too
+    let isDragging = false, prevTouchX = 0, prevTouchY = 0;
 
     document.addEventListener('touchstart', (e) => {
-        if(e.touches.length > 0) {
+        if (e.touches.length > 0) {
             isDragging = true;
-            previousTouchX = e.touches[0].clientX;
-            previousTouchY = e.touches[0].clientY;
+            prevTouchX = e.touches[0].clientX;
+            prevTouchY = e.touches[0].clientY;
         }
-    }, {passive: true});
+    }, { passive: true });
 
     document.addEventListener('touchmove', (e) => {
-        if(isDragging && e.touches.length > 0) {
-            const touchX = e.touches[0].clientX;
-            const touchY = e.touches[0].clientY;
-            const deltaX = touchX - previousTouchX;
-            const deltaY = touchY - previousTouchY;
-            
-            // Spin the globe directly with the finger
-            coreGroup.rotation.y += deltaX * 0.01;
-            coreGroup.rotation.x += deltaY * 0.01;
-            
-            // ALSO move the particles / scene so everything reacts to touch
-            mouseX = (touchX - windowHalfX);
-            mouseY = (touchY - windowHalfY);
+        if (!isDragging || e.touches.length === 0) return;
+        const tx = e.touches[0].clientX;
+        const ty = e.touches[0].clientY;
+        const dx = tx - prevTouchX;
+        const dy = ty - prevTouchY;
 
-            previousTouchX = touchX;
-            previousTouchY = touchY;
-        }
-    }, {passive: true});
+        // Spin globe with finger
+        coreGroup.rotation.y += dx * 0.01;
+        coreGroup.rotation.x += dy * 0.01;
 
-    document.addEventListener('touchend', () => {
-        isDragging = false;
-    });
+        // Drive particle/scene reaction (same as mouse)
+        mouseX = tx - windowHalfX;
+        mouseY = ty - windowHalfY;
 
+        prevTouchX = tx;
+        prevTouchY = ty;
+    }, { passive: true });
 
-    // 4. SCROLL TO CAMERA SYNC (GSAP)
-    // We bind the camera's Z and Y position to the page scroll
+    document.addEventListener('touchend', () => { isDragging = false; });
+
+    // 5. SCROLL → CAMERA SYNC
     gsap.registerPlugin(ScrollTrigger);
-
     ScrollTrigger.create({
         trigger: "#scroll-proxy",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1, // Smooth dragging
+        start: "top top", end: "bottom bottom", scrub: 1,
         onUpdate: (self) => {
-            // self.progress goes from 0 to 1
-            // We fly from Z=100 into the scene to Z=-400
-            gsap.to(camera.position, {
-                z: 100 - (self.progress * 500),
-                y: -(self.progress * 50),
-                ease: "power2.out",
-                duration: 0.5
-            });
-            
-            // Rotate the core progressively with scroll
-            gsap.to(coreGroup.rotation, {
-                x: self.progress * Math.PI * 2,
-                z: self.progress * Math.PI,
-                duration: 1,
-                ease: "power1.out"
-            });
+            gsap.to(camera.position, { z: 100 - self.progress * 500, y: -(self.progress * 50), ease: "power2.out", duration: 0.5 });
+            gsap.to(coreGroup.rotation, { x: self.progress * Math.PI * 2, z: self.progress * Math.PI, duration: 1, ease: "power1.out" });
         }
     });
 
-    // 5. HTML UI CSS ANTI-GRAVITY / PARALLAX
-    const cards = document.querySelectorAll('.interactive-card');
-    
-    // We add a momentum effect using a continuous requestAnimationFrame loop for the cards
-    let currentScroll = 0;
-    let targetScroll = 0;
-    
-    window.addEventListener('scroll', () => {
-        targetScroll = window.scrollY;
-    });
+    // 6. KPI PULSE ANIMATION SYSTEM
+    const kpiLabels = ['-40% CPC', '3,000+ Assets', '5.3x ROAS', '↑45% Performance', '98% Satisfaction'];
+    const kpiColors = ['#00F0FF', '#D4AF37', '#D4AF37', '#00F0FF', '#D4AF37'];
 
-    // 6. RENDER LOOP
+    // Create reusable overlay container
+    const kpiOverlay = document.createElement('div');
+    kpiOverlay.id = 'kpi-overlay';
+    kpiOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50;overflow:hidden;';
+    document.body.appendChild(kpiOverlay);
+
+    function spawnKPI(count = 1, originX = null, originY = null) {
+        // Default origin: approximate globe center on screen
+        const globeScreenX = originX ?? (window.innerWidth / 2 + (isMobile ? 0 : 80));
+        const globeScreenY = originY ?? (isMobile ? window.innerHeight * 0.22 : window.innerHeight * 0.45);
+
+        for (let i = 0; i < count; i++) {
+            const idx = Math.floor(Math.random() * kpiLabels.length);
+            const label = document.createElement('div');
+            label.innerText = kpiLabels[idx];
+
+            const angle = (Math.random() * 2 * Math.PI);
+            const speed = 60 + Math.random() * 80;
+            const vx = Math.cos(angle) * speed;
+            const vy = Math.sin(angle) * speed - 30; // slight upward bias
+
+            label.style.cssText = `
+                position:absolute;
+                left:${globeScreenX}px;
+                top:${globeScreenY}px;
+                font-family:'Courier New',monospace;
+                font-size:${11 + Math.random() * 4}px;
+                font-weight:700;
+                color:${kpiColors[idx]};
+                white-space:nowrap;
+                transform:translate(-50%,-50%);
+                pointer-events:none;
+                opacity:1;
+                text-shadow:0 0 10px ${kpiColors[idx]};
+                transition:none;
+            `;
+            kpiOverlay.appendChild(label);
+
+            // Animate outward + fade
+            const start = performance.now();
+            const duration = 1200 + Math.random() * 600;
+            function animLabel(now) {
+                const t = Math.min((now - start) / duration, 1);
+                const ease = 1 - Math.pow(1 - t, 3);
+                label.style.left = `${globeScreenX + vx * ease}px`;
+                label.style.top  = `${globeScreenY + vy * ease}px`;
+                label.style.opacity = `${1 - t}`;
+                if (t < 1) requestAnimationFrame(animLabel);
+                else label.remove();
+            }
+            requestAnimationFrame(animLabel);
+        }
+    }
+
+    function pulseGlobe(strong = false) {
+        // Scale pulse on the core mesh
+        const scale = strong ? 1.4 : 1.2;
+        const duration = strong ? 0.35 : 0.5;
+        gsap.to(coreMesh.scale, { x: scale, y: scale, z: scale, duration, ease: 'power2.out',
+            onComplete: () => gsap.to(coreMesh.scale, { x: 1, y: 1, z: 1, duration: 0.6, ease: 'elastic.out(1, 0.4)' })
+        });
+        // Brighten the wireframe
+        gsap.to(coreMaterial, { opacity: strong ? 0.7 : 0.45, duration,
+            onComplete: () => gsap.to(coreMaterial, { opacity: 0.15, duration: 0.8 })
+        });
+        if (strong) {
+            // Screen shake for active click
+            gsap.to(canvas, { x: 4, y: -3, duration: 0.05, yoyo: true, repeat: 5, ease: 'none',
+                onComplete: () => gsap.set(canvas, { x: 0, y: 0 })
+            });
+        }
+    }
+
+    // PASSIVE: pulse every 5s, spawn 1 KPI label
+    setInterval(() => {
+        pulseGlobe(false);
+        setTimeout(() => spawnKPI(1), 150);
+    }, 5000);
+
+    // ACTIVE: click/tap on canvas fires strong burst + 3 labels
+    canvas.addEventListener('click', (e) => {
+        pulseGlobe(true);
+        setTimeout(() => spawnKPI(3, e.clientX, e.clientY), 50);
+    });
+    canvas.addEventListener('touchend', (e) => {
+        if (e.changedTouches.length > 0) {
+            pulseGlobe(true);
+            const t = e.changedTouches[0];
+            setTimeout(() => spawnKPI(3, t.clientX, t.clientY), 50);
+        }
+    }, { passive: true });
+
+    // 7. RENDER LOOP
     const clock = new THREE.Clock();
+    let currentScroll = 0, targetScroll = 0;
+    window.addEventListener('scroll', () => { targetScroll = window.scrollY; });
+
+    const cards = document.querySelectorAll('.interactive-card');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            card.style.transform = `translateY(0px) perspective(1000px) rotateX(${(y / (rect.height / 2)) * -5}deg) rotateY(${(x / (rect.width / 2)) * 5}deg) scale(1.02)`;
+        });
+    });
 
     function renderFrame() {
         const elapsedTime = clock.getElapsedTime();
 
-        // Cursor Reactivity Lerp
         targetX = mouseX * 0.001;
         targetY = mouseY * 0.001;
 
         coreGroup.rotation.y += 0.002;
         coreGroup.rotation.x += 0.001;
-        
-        // Subtle drift for particles
         particlesMesh.rotation.y = elapsedTime * 0.05;
-        // Make the entire scene subtly follow the mouse
+
+        // Lerp scene rotation — mouse AND touch writes to mouseX/Y so particles follow both
         scene.rotation.x += 0.05 * (targetY - scene.rotation.x);
         scene.rotation.y += 0.05 * (targetX - scene.rotation.y);
 
-        // Render WebGL
         renderer.render(scene, camera);
 
-        // HTML Anti-Gravity Lerp (Smooth scrolling velocity calculation)
-        // Interpolate current scroll towards target scroll
+        // Floating card momentum
         currentScroll += (targetScroll - currentScroll) * 0.1;
-        const velocity = targetScroll - currentScroll; // Delta
-        
+        const velocity = targetScroll - currentScroll;
         cards.forEach((card, index) => {
-            // Base transform includes a floating sine wave + velocity momentum
-            const floatY = Math.sin(elapsedTime * 2 + index) * 5; 
-            const momentumY = velocity * -0.05; // When scrolling down, cards lag slightly upward
-            
             const rect = card.getBoundingClientRect();
-            // If in viewport
-            if(rect.top < window.innerHeight && rect.bottom > 0) {
-                card.style.transform = `translateY(${floatY + momentumY}px)`;
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                const floatY = Math.sin(elapsedTime * 2 + index) * 5;
+                card.style.transform = `translateY(${floatY + velocity * -0.05}px)`;
             }
-        });
-
-        // Interactive Mouse hover overrides on individual cards
-        cards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left - (rect.width/2);
-                const y = e.clientY - rect.top - (rect.height/2);
-                
-                const rotateX = (y / (rect.height/2)) * -5;
-                const rotateY = (x / (rect.width/2)) * 5;
-                
-                // Overlay on top of the animation loop
-                card.style.transform = `translateY(0px) perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-            });
-            
-            // Clean up when mouse leaves is naturally handled by the next frame of renderFrame mapping it back to floatY
         });
 
         requestAnimationFrame(renderFrame);
     }
-
     renderFrame();
 
-    // Resize Handler
+    // 8. RESIZE HANDLER
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // Subtly trigger reveal classes
+    // 9. FADE-IN OBSERVER
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, { threshold: 0.1 });
-
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-    
-    // Mobile menu toggle logic
+
+    // 10. MOBILE MENU — toggle, close-on-link, matrix rain
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-    const mobileMenu = document.querySelector('.mobile-menu');
-    if (mobileMenuBtn && mobileMenu) {
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('open');
-            const icon = mobileMenuBtn.querySelector('i');
-            if(mobileMenu.classList.contains('open')) {
-                icon.classList.replace('fa-bars', 'fa-times');
-            } else {
-                icon.classList.replace('fa-times', 'fa-bars');
-            }
-        });
-
-        // Close menu when any nav link is clicked
-        document.querySelectorAll('.mobile-nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('open');
-                const icon = mobileMenuBtn.querySelector('i');
-                icon.classList.replace('fa-times', 'fa-bars');
-            });
-        });
-    }
-
-    // Matrix rain animation inside mobile menu
+    const mobileMenu   = document.querySelector('.mobile-menu');
     const matrixCanvas = document.getElementById('menu-matrix-canvas');
-    if (matrixCanvas) {
+    let matrixInterval = null;
+
+    function startMatrixRain() {
+        if (!matrixCanvas || matrixInterval) return;
         const mCtx = matrixCanvas.getContext('2d');
-        matrixCanvas.width = window.innerWidth;
-        matrixCanvas.height = window.innerHeight;
-
-        const matrixChars = 'RISE01CLICKS10ROAS>_{}[]#@!ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        matrixCanvas.width  = mobileMenu.offsetWidth  || window.innerWidth;
+        matrixCanvas.height = mobileMenu.offsetHeight || window.innerHeight;
+        const chars   = 'RISE01CLICKS10ROAS>_{}[]#@!ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const fontSize = 13;
-        const columns = Math.floor(matrixCanvas.width / fontSize);
-        const drops = Array(columns).fill(1);
-
-        function drawMatrix() {
-            mCtx.fillStyle = 'rgba(2, 4, 2, 0.05)';
+        const cols    = Math.floor(matrixCanvas.width / fontSize);
+        const drops   = Array(cols).fill(1);
+        matrixInterval = setInterval(() => {
+            mCtx.fillStyle = 'rgba(2,4,2,0.05)';
             mCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
-            mCtx.fillStyle = '#00F0FF';
-            mCtx.font = `${fontSize}px 'Courier New', monospace`;
+            mCtx.font = `${fontSize}px 'Courier New',monospace`;
             drops.forEach((y, i) => {
-                const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                mCtx.fillStyle = i % 5 === 0 ? '#D4AF37' : '#00F0FF'; // Gold accent every 5th column
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                mCtx.fillStyle = i % 5 === 0 ? '#D4AF37' : '#00F0FF';
                 mCtx.fillText(char, i * fontSize, y * fontSize);
                 if (y * fontSize > matrixCanvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             });
-        }
-        setInterval(drawMatrix, 50);
+        }, 50);
     }
 
-    // Show mobile-only dashboard section on small screens
+    function stopMatrixRain() {
+        if (matrixInterval) { clearInterval(matrixInterval); matrixInterval = null; }
+    }
+
+    function closeMobileMenu() {
+        if (!mobileMenu) return;
+        mobileMenu.classList.remove('open');
+        stopMatrixRain();
+        const icon = mobileMenuBtn?.querySelector('i');
+        if (icon) { icon.classList.replace('fa-times', 'fa-bars'); }
+    }
+
+    if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('open');
+            const icon   = mobileMenuBtn.querySelector('i');
+            if (isOpen) {
+                icon.classList.replace('fa-bars', 'fa-times');
+                startMatrixRain();
+            } else {
+                icon.classList.replace('fa-times', 'fa-bars');
+                stopMatrixRain();
+            }
+        });
+    }
+
+    // Close menu on ANY mobile nav link click (including Get Started)
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+    });
+
+    // 11. SHOW MOBILE DASHBOARD SECTION
     if (window.innerWidth <= 480) {
         const mobileDash = document.querySelector('.mobile-dashboard-section');
         if (mobileDash) mobileDash.style.display = 'block';
