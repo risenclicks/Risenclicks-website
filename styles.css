@@ -531,7 +531,7 @@ button { cursor: pointer; border: none; font-family: inherit; }
 
 @media (max-width: 480px) {
     .section { padding: 80px 0; }
-    .hero-section { padding-top: 120px; }
+    .hero-section { padding-top: 320px; /* Pushed significantly down to leave top empty for the globe */ }
     .hero-grid { gap: 60px; grid-template-columns: 1fr; }
     .hero-demo { display: none; /* Hide interactive card to declutter mobile */ }
     .hero-title { font-size: 2rem; margin-bottom: 20px; text-align: center; }
