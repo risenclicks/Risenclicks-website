@@ -353,7 +353,22 @@ button { cursor: pointer; border: none; font-family: inherit; }
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     z-index: 1; opacity: 0.15; pointer-events: none;
 }
-
+/* Dedicated visible close button inside the menu */
+.mobile-menu-close {
+    position: absolute;
+    top: 24px; right: 24px;
+    z-index: 10;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--color-white);
+    font-size: 1.5rem;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+.mobile-menu-close:hover { background: rgba(212,175,55,0.2); transform: rotate(90deg); }
 
 /* HERO SECTION */
 .hero-section { 

@@ -39,14 +39,16 @@
         <!-- Mobile Menu -->
         <div class="mobile-menu">
             <canvas id="menu-matrix-canvas"></canvas>
+            <!-- Dedicated close button so user is never trapped -->
+            <button class="mobile-menu-close" aria-label="Close Menu"><i class="fas fa-times"></i></button>
             <ul>
-                <li><a href="#hero" class="mobile-nav-link">Home</a></li>
-                <li><a href="#trust" class="mobile-nav-link">Results</a></li>
-                <li><a href="#creative" class="mobile-nav-link">Creative Work</a></li>
-                <li><a href="#process" class="mobile-nav-link">Process</a></li>
-                <li><a href="#contact" class="mobile-nav-link">Contact</a></li>
+                <li><a href="#hero" class="mobile-nav-link" data-target="hero">Home</a></li>
+                <li><a href="#trust" class="mobile-nav-link" data-target="trust">Results</a></li>
+                <li><a href="#creative" class="mobile-nav-link" data-target="creative">Creative Work</a></li>
+                <li><a href="#process" class="mobile-nav-link" data-target="process">Process</a></li>
+                <li><a href="#contact" class="mobile-nav-link" data-target="contact">Contact</a></li>
             </ul>
-            <a href="#contact" class="btn btn-teal-gradient mt-6 mobile-nav-link">Get Started</a>
+            <a href="#contact" class="btn btn-teal-gradient mobile-nav-link" data-target="contact">Get Started</a>
         </div>
     </nav>
 

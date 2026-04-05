@@ -105,101 +105,30 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 6. KPI PULSE ANIMATION SYSTEM
-    const kpiLabels = ['-40% CPC', '3,000+ Assets', '5.3x ROAS', '↑45% Performance', '98% Satisfaction'];
-    const kpiColors = ['#00F0FF', '#D4AF37', '#D4AF37', '#00F0FF', '#D4AF37'];
-
-    // Create reusable overlay container
-    const kpiOverlay = document.createElement('div');
-    kpiOverlay.id = 'kpi-overlay';
-    kpiOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50;overflow:hidden;';
-    document.body.appendChild(kpiOverlay);
-
-    function spawnKPI(count = 1, originX = null, originY = null) {
-        // Default origin: approximate globe center on screen
-        const globeScreenX = originX ?? (window.innerWidth / 2 + (isMobile ? 0 : 80));
-        const globeScreenY = originY ?? (isMobile ? window.innerHeight * 0.22 : window.innerHeight * 0.45);
-
-        for (let i = 0; i < count; i++) {
-            const idx = Math.floor(Math.random() * kpiLabels.length);
-            const label = document.createElement('div');
-            label.innerText = kpiLabels[idx];
-
-            const angle = (Math.random() * 2 * Math.PI);
-            const speed = 60 + Math.random() * 80;
-            const vx = Math.cos(angle) * speed;
-            const vy = Math.sin(angle) * speed - 30; // slight upward bias
-
-            label.style.cssText = `
-                position:absolute;
-                left:${globeScreenX}px;
-                top:${globeScreenY}px;
-                font-family:'Courier New',monospace;
-                font-size:${11 + Math.random() * 4}px;
-                font-weight:700;
-                color:${kpiColors[idx]};
-                white-space:nowrap;
-                transform:translate(-50%,-50%);
-                pointer-events:none;
-                opacity:1;
-                text-shadow:0 0 10px ${kpiColors[idx]};
-                transition:none;
-            `;
-            kpiOverlay.appendChild(label);
-
-            // Animate outward + fade
-            const start = performance.now();
-            const duration = 1200 + Math.random() * 600;
-            function animLabel(now) {
-                const t = Math.min((now - start) / duration, 1);
-                const ease = 1 - Math.pow(1 - t, 3);
-                label.style.left = `${globeScreenX + vx * ease}px`;
-                label.style.top  = `${globeScreenY + vy * ease}px`;
-                label.style.opacity = `${1 - t}`;
-                if (t < 1) requestAnimationFrame(animLabel);
-                else label.remove();
-            }
-            requestAnimationFrame(animLabel);
-        }
-    }
-
+    // 6. GLOBE PULSE ANIMATION (Marketing-grade interactions)
     function pulseGlobe(strong = false) {
-        // Scale pulse on the core mesh
         const scale = strong ? 1.4 : 1.2;
-        const duration = strong ? 0.35 : 0.5;
-        gsap.to(coreMesh.scale, { x: scale, y: scale, z: scale, duration, ease: 'power2.out',
+        const dur   = strong ? 0.35 : 0.5;
+        gsap.to(coreMesh.scale, { x: scale, y: scale, z: scale, duration: dur, ease: 'power2.out',
             onComplete: () => gsap.to(coreMesh.scale, { x: 1, y: 1, z: 1, duration: 0.6, ease: 'elastic.out(1, 0.4)' })
         });
-        // Brighten the wireframe
-        gsap.to(coreMaterial, { opacity: strong ? 0.7 : 0.45, duration,
+        gsap.to(coreMaterial, { opacity: strong ? 0.65 : 0.4, duration: dur,
             onComplete: () => gsap.to(coreMaterial, { opacity: 0.15, duration: 0.8 })
         });
         if (strong) {
-            // Screen shake for active click
+            // Subtle screen shake on active click/tap
             gsap.to(canvas, { x: 4, y: -3, duration: 0.05, yoyo: true, repeat: 5, ease: 'none',
                 onComplete: () => gsap.set(canvas, { x: 0, y: 0 })
             });
         }
     }
 
-    // PASSIVE: pulse every 5s, spawn 1 KPI label
-    setInterval(() => {
-        pulseGlobe(false);
-        setTimeout(() => spawnKPI(1), 150);
-    }, 5000);
+    // PASSIVE: pulse glow every 5s — globe always feels alive
+    setInterval(() => pulseGlobe(false), 5000);
 
-    // ACTIVE: click/tap on canvas fires strong burst + 3 labels
-    canvas.addEventListener('click', (e) => {
-        pulseGlobe(true);
-        setTimeout(() => spawnKPI(3, e.clientX, e.clientY), 50);
-    });
-    canvas.addEventListener('touchend', (e) => {
-        if (e.changedTouches.length > 0) {
-            pulseGlobe(true);
-            const t = e.changedTouches[0];
-            setTimeout(() => spawnKPI(3, t.clientX, t.clientY), 50);
-        }
-    }, { passive: true });
+    // ACTIVE: stronger burst on click or tap (desktop + mobile)
+    canvas.addEventListener('click', () => pulseGlobe(true));
+    canvas.addEventListener('touchend', () => pulseGlobe(true), { passive: true });
 
     // 7. RENDER LOOP
     const clock = new THREE.Clock();
@@ -262,6 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 10. MOBILE MENU — toggle, close-on-link, matrix rain
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const mobileMenuCloseBtn = document.querySelector('.mobile-menu-close');
     const mobileMenu   = document.querySelector('.mobile-menu');
     const matrixCanvas = document.getElementById('menu-matrix-canvas');
     let matrixInterval = null;
@@ -269,8 +199,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function startMatrixRain() {
         if (!matrixCanvas || matrixInterval) return;
         const mCtx = matrixCanvas.getContext('2d');
-        matrixCanvas.width  = mobileMenu.offsetWidth  || window.innerWidth;
-        matrixCanvas.height = mobileMenu.offsetHeight || window.innerHeight;
+        matrixCanvas.width  = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
         const chars   = 'RISE01CLICKS10ROAS>_{}[]#@!ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const fontSize = 13;
         const cols    = Math.floor(matrixCanvas.width / fontSize);
@@ -301,6 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (icon) { icon.classList.replace('fa-times', 'fa-bars'); }
     }
 
+    // Hamburger toggle button
     if (mobileMenuBtn && mobileMenu) {
         mobileMenuBtn.addEventListener('click', () => {
             const isOpen = mobileMenu.classList.toggle('open');
@@ -315,10 +246,27 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Close menu on ANY mobile nav link click (including Get Started)
+    // Dedicated × close button inside the menu
+    if (mobileMenuCloseBtn) {
+        mobileMenuCloseBtn.addEventListener('click', closeMobileMenu);
+    }
+
+    // Nav link clicks: close menu first, then navigate after transition completes
     document.querySelectorAll('.mobile-nav-link').forEach(link => {
-        link.addEventListener('click', closeMobileMenu);
+        link.addEventListener('click', function(e) {
+            e.preventDefault(); // Stop instant jump
+            const targetId = this.dataset.target || this.getAttribute('href')?.replace('#', '');
+            closeMobileMenu();
+            // Wait for menu slide-up transition (500ms) then scroll
+            setTimeout(() => {
+                const target = document.getElementById(targetId);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 520);
+        }, true); // capture: true — fires before any other handler
     });
+
 
     // 11. SHOW MOBILE DASHBOARD SECTION
     if (window.innerWidth <= 480) {
