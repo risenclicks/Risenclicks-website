@@ -61,6 +61,13 @@ document.addEventListener("DOMContentLoaded", () => {
             addAdj(v2, v3); addAdj(v3, v2);
             addAdj(v3, v1); addAdj(v1, v3);
         }
+    } else {
+        // Fallback for non-indexed geometry (Standard Icosahedron)
+        for (let i = 0; i < posAttr.count; i += 3) {
+            addAdj(i, i+1); addAdj(i+1, i);
+            addAdj(i+1, i+2); addAdj(i+2, i+1);
+            addAdj(i+2, i);   addAdj(i, i+2);
+        }
     }
 
     const glintsCount = 6;
@@ -77,9 +84,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (let i = 0; i < glintsCount; i++) {
         const startNode = Math.floor(Math.random() * posAttr.count);
+        const neighbors = adjacency[startNode] || [startNode];
         glints.push({
             current: startNode,
-            target: adjacency[startNode][Math.floor(Math.random() * adjacency[startNode].length)],
+            target: neighbors[Math.floor(Math.random() * neighbors.length)],
             progress: Math.random(),
             speed: 0.01 + Math.random() * 0.015
         });
