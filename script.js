@@ -35,64 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const coreMesh = new THREE.Mesh(coreGeometry, coreMaterial);
     coreGroup.add(coreMesh);
 
-    // Node Sparkle (Vertex points)
-    const sparkleMaterial = new THREE.PointsMaterial({
-        size: 1.2, color: 0xD4AF37, transparent: true, opacity: 0.8,
-        blending: THREE.AdditiveBlending
-    });
-    const sparklePoints = new THREE.Points(coreGeometry, sparkleMaterial);
-    coreGroup.add(sparklePoints);
-
-    // Edge Glints (Moving data packets)
-    // Extract unique edges and adjacency for the Glint system
-    const adjacency = {};
-    const posAttr = coreGeometry.attributes.position;
-    const indexAttr = coreGeometry.index;
-    
-    function addAdj(a, b) {
-        if (!adjacency[a]) adjacency[a] = [];
-        if (!adjacency[a].includes(b)) adjacency[a].push(b);
-    }
-
-    if (indexAttr) {
-        for (let i = 0; i < indexAttr.count; i += 3) {
-            const v1 = indexAttr.getX(i), v2 = indexAttr.getX(i+1), v3 = indexAttr.getX(i+2);
-            addAdj(v1, v2); addAdj(v2, v1);
-            addAdj(v2, v3); addAdj(v3, v2);
-            addAdj(v3, v1); addAdj(v1, v3);
-        }
-    } else {
-        // Fallback for non-indexed geometry (Standard Icosahedron)
-        for (let i = 0; i < posAttr.count; i += 3) {
-            addAdj(i, i+1); addAdj(i+1, i);
-            addAdj(i+1, i+2); addAdj(i+2, i+1);
-            addAdj(i+2, i);   addAdj(i, i+2);
-        }
-    }
-
-    const glintsCount = 6;
-    const glints = [];
-    const glintPosArray = new Float32Array(glintsCount * 3);
-    const glintGeometry = new THREE.BufferGeometry();
-    glintGeometry.setAttribute('position', new THREE.BufferAttribute(glintPosArray, 3));
-    const glintMaterial = new THREE.PointsMaterial({
-        size: 2.5, color: 0x00F0FF, transparent: true, opacity: 0.9,
-        blending: THREE.AdditiveBlending
-    });
-    const glintPoints = new THREE.Points(glintGeometry, glintMaterial);
-    coreGroup.add(glintPoints);
-
-    for (let i = 0; i < glintsCount; i++) {
-        const startNode = Math.floor(Math.random() * posAttr.count);
-        const neighbors = adjacency[startNode] || [startNode];
-        glints.push({
-            current: startNode,
-            target: neighbors[Math.floor(Math.random() * neighbors.length)],
-            progress: Math.random(),
-            speed: 0.01 + Math.random() * 0.015
-        });
-    }
-
     // 3. PARTICLES (Ambient environment)
     const particlesGeometry = new THREE.BufferGeometry();
     const particlesCount = 700;
@@ -213,31 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
         coreGroup.rotation.y += 0.002;
         coreGroup.rotation.x += 0.001;
         particlesMesh.rotation.y = elapsedTime * 0.05;
-
-        // Animate Node Sparkle (Vertex pulse)
-        sparkleMaterial.opacity = 0.4 + Math.sin(elapsedTime * 3) * 0.3;
-
-        // Animate Edges Glints
-        for (let i = 0; i < glintsCount; i++) {
-            const g = glints[i];
-            g.progress += g.speed;
-            
-            if (g.progress >= 1) {
-                g.progress = 0;
-                g.current = g.target;
-                const neighbors = adjacency[g.current];
-                g.target = neighbors[Math.floor(Math.random() * neighbors.length)];
-            }
-
-            const v1 = new THREE.Vector3().fromBufferAttribute(posAttr, g.current);
-            const v2 = new THREE.Vector3().fromBufferAttribute(posAttr, g.target);
-            const p = v1.clone().lerp(v2, g.progress);
-            
-            glintPosArray[i * 3]     = p.x;
-            glintPosArray[i * 3 + 1] = p.y;
-            glintPosArray[i * 3 + 2] = p.z;
-        }
-        glintGeometry.attributes.position.needsUpdate = true;
 
         // Lerp scene rotation — mouse AND touch writes to mouseX/Y so particles follow both
         scene.rotation.x += 0.05 * (targetY - scene.rotation.x);
